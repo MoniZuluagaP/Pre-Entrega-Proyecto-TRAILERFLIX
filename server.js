@@ -38,6 +38,26 @@ app.get('/catalogo', (req, res) => {
     }
 });
 
+// Endpoint para buscar por título: completo o parcial
+app.get('/titulo/:tit', (req, res) => {
+    if (!TRAILERFLIX) {
+        return res.status(500).json({ error: 'Datos no cargados' });
+    }
+
+    try {
+        const tituloIngresado = req.params.tit.toLowerCase();
+        const resultado = TRAILERFLIX.filter(peliSerie => peliSerie.titulo.toLowerCase().includes(tituloIngresado));
+
+        if (resultado.length === 0) {
+            return res.status(404).json({ error: 'No se encontraron películas o series con ese título' });
+        }
+
+        res.status(200).json(resultado);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al buscar por título' });
+    }
+});
+
 // Endpoint para buscar películas por actor/actriz
 app.get('/reparto/:act', (req, res) => {
     if (!TRAILERFLIX) {
