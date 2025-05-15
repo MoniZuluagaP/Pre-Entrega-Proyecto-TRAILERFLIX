@@ -25,6 +25,18 @@ app.get('/', (req, res) => {
 });
 
 //Aqui irian los endpoints de Silvia
+// Endpoint para obtener todo el catálogo de series y peliculas
+app.get('/catalogo', (req, res) => {
+    if (!TRAILERFLIX) {
+        return res.status(500).json({ error: 'Datos no cargados' });
+    }
+
+    try {
+        res.status(200).json(TRAILERFLIX);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al cargar el catálogo de TrailerFlix' });
+    }
+});
 
 // Endpoint para buscar películas por actor/actriz
 app.get('/reparto/:act', (req, res) => {
