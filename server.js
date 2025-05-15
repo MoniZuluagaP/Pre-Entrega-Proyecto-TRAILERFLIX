@@ -58,6 +58,33 @@ app.get('/titulo/:tit', (req, res) => {
     }
 });
 
+// Endpoint para buscar por categoría (posibles valores: serie o pelicula)
+app.get('/categoria/:cat', (req, res) => {
+    if (!TRAILERFLIX) {
+        return res.status(500).json({ error: 'Datos no cargados' });
+    }
+
+    try {
+        const categoriaBuscada = req.params.cat.toLowerCase();
+        const categoriasValidas = ["película", "serie"];
+
+        // Validar si la categoría ingresada es correcta
+        if (!categoriasValidas.includes(categoriaBuscada)) {
+            return res.status(400).json({ error: 'Categoría inválida. Las categorias son "película" o "serie".' });
+        }
+
+        const resultado = TRAILERFLIX.filter(peliSerie => peliSerie.categoria.toLowerCase() === categoriaBuscada);
+
+        if (resultado.length === 0) {
+            return res.status(404).json({ error: `No se encontraron ${categoriaBuscada} en TrailerFix.` });
+        }
+
+        res.status(200).json(resultado);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al buscar por categoría' });
+    }
+});
+
 // Endpoint para buscar películas por actor/actriz
 app.get('/reparto/:act', (req, res) => {
     if (!TRAILERFLIX) {
